@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Loggly;
 using Loggly.Config;
 using Loggly.Transports.Syslog;
@@ -102,7 +103,7 @@ namespace Serilog.Sinks.Loggly.Tests
         }
 
         [Fact]
-        public void LogglyClientSendException()
+        public async Task LogglyClientSendException()
         {
             var config = LogglyConfig.Instance;
             config.CustomerToken = "83fe7674-f87d-473e-a8af-bbbbbbbbbbbb";
@@ -116,7 +117,7 @@ namespace Serilog.Sinks.Loggly.Tests
             config.TagConfig.Tags.Add(ct);
             var logglyClient = new LogglyClient();
 
-            
+
             try
             {
                 ThrowException();
@@ -132,7 +133,7 @@ namespace Serilog.Sinks.Loggly.Tests
                 logglyEvent.Data.AddIfAbsent("Level", "Error");
                 logglyEvent.Data.AddIfAbsent("Exception", e);
 
-                var res = logglyClient.Log(logglyEvent).Result;
+                var res = await logglyClient.Log(logglyEvent);
                 Assert.Equal(ResponseCode.Success, res.Code);
             }
             Thread.Sleep(5000);
@@ -143,6 +144,6 @@ namespace Serilog.Sinks.Loggly.Tests
             throw new ArgumentOutOfRangeException("Hello", "xyz", "sdsd");
         }
 
-        
+
     }
 }

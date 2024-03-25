@@ -1,11 +1,11 @@
 ﻿// Copyright 2014 Serilog Contributors
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.Loggly;
+using Serilog.Sinks.PeriodicBatching;
 
 namespace Serilog
 {
@@ -46,10 +47,10 @@ namespace Serilog
         /// <param name="controlLevelSwitch">If provided, the switch will be updated based on the Seq server's level setting
         /// for the corresponding API key. Passing the same key to MinimumLevel.ControlledBy() will make the whole pipeline
         /// dynamically controlled. Do not specify <paramref name="restrictedToMinimumLevel"/> with this setting.</param>
-        /// <param name="retainedInvalidPayloadsLimitBytes">A soft limit for the number of bytes to use for storing failed requests.  
+        /// <param name="retainedInvalidPayloadsLimitBytes">A soft limit for the number of bytes to use for storing failed requests.
         /// The limit is soft in that it can be exceeded by any single error payload, but in that case only that single error
         /// payload will be retained.</param>
-        /// <param name="retainedFileCountLimit">number of files to retain for the buffer. If defined, this also controls which records 
+        /// <param name="retainedFileCountLimit">number of files to retain for the buffer. If defined, this also controls which records
         /// in the buffer get sent to the remote Loggly instance</param>
         /// <param name="customerToken">Token used to identify the Loggly account to use</param>
         /// <param name="tags">Comma-delimited list of tags to submit to Loggly</param>
@@ -82,8 +83,6 @@ namespace Serilog
 
             var defaultedPeriod = period ?? LogglySink.DefaultPeriod;
 
-            ILogEventSink sink;
-
             LogglyConfiguration constructedLogglyConfig = null;
             if (customerToken != null)
             {
@@ -97,25 +96,15 @@ namespace Serilog
 
             var activeLogglyConfig = logglyConfig ?? constructedLogglyConfig;
 
-            if (bufferBaseFilename == null)
+            var logglySink = new LogglySink(formatProvider, defaultedPeriod, activeLogglyConfig, includes);
+
+            var batchingOptions = new PeriodicBatchingSinkOptions
             {
-                sink = new LogglySink(formatProvider, batchPostingLimit, defaultedPeriod, activeLogglyConfig, includes);
-            }
-            else
-            {
-                sink = new DurableLogglySink(
-                    bufferBaseFilename,
-                    batchPostingLimit,
-                    defaultedPeriod,
-                    bufferFileSizeLimitBytes,
-                    eventBodyLimitBytes,
-                    controlLevelSwitch,
-                    retainedInvalidPayloadsLimitBytes, 
-                    retainedFileCountLimit,
-                    formatProvider,
-                    activeLogglyConfig,
-                    includes);
-            }
+                BatchSizeLimit = batchPostingLimit,
+            };
+
+            var sink = new PeriodicBatchingSink(logglySink, batchingOptions);
+
 
             return loggerConfiguration.Sink(sink, restrictedToMinimumLevel);
         }
