@@ -84,7 +84,7 @@ namespace SampleDurableLogger
                 .CreateLogger();
         }
 
-       
+
         static void SetupLogglyConfiguration()
         {
             //CHANGE THESE TWO TO YOUR LOGGLY ACCOUNT: DO NOT COMMIT TO Source control!!!
@@ -116,21 +116,21 @@ namespace SampleDurableLogger
         {
             var loggingCulture = new CultureInfo("");
 
-            //with this DateTime and DateTimeOffset string representations will be sortable. By default, 
-            // serialization without a culture or formater will use InvariantCulture. This may or may not be 
+            //with this DateTime and DateTimeOffset string representations will be sortable. By default,
+            // serialization without a culture or formater will use InvariantCulture. This may or may not be
             // desirable, depending on the sorting needs you require or even the region your in. In this sample
             // the invariant culture is used as a base, but the DateTime format is changed to a specific representation.
             // Instead of the dd/MM/yyyy hh:mm:ss, we'll force yyyy-MM-dd HH:mm:ss.fff which is sortable and obtainable
             // by overriding ShortDatePattern and LongTimePattern.
             //
             //Do note that they don't include the TimeZone by default, so a datetime will not have the TZ
-            // while a DateTimeOffset will in it's string representation. 
-            // Both use the longTimePattern for time formatting, but including the time zone in the 
+            // while a DateTimeOffset will in it's string representation.
+            // Both use the longTimePattern for time formatting, but including the time zone in the
             // pattern will duplicate the TZ representation when using DateTimeOffset which serilog does
             // for the timestamp.
             //
-            //If you do not require specific formats, this method will not be required. Just pass in null (the default) 
-            // for IFormatProvider in the Loggly() sink configuration method. 
+            //If you do not require specific formats, this method will not be required. Just pass in null (the default)
+            // for IFormatProvider in the Loggly() sink configuration method.
             loggingCulture.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
             loggingCulture.DateTimeFormat.LongTimePattern = "HH:mm:ss.fff";
 

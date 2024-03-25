@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyVersion("3.1.0.0")]
 
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 [assembly: InternalsVisibleTo("Serilog.Sinks.Loggly.Tests, PublicKey=00240000048000009400000006020000" +
                                                                     "00240000525341310004000001000100" +
