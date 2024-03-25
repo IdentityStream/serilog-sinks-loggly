@@ -11,9 +11,10 @@
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>IdentityStream.Sinks.Loggly</PackageId>
     <PackageTags>serilog;logging;Loggly;error</PackageTags>
-    <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <PackageProjectUrl>http://serilog.net</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIcon>serilog-sink-nuget.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/serilog/serilog-sinks-loggly</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
@@ -25,6 +26,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../assets/serilog-sink-nuget.png" Pack="true" Visible="false" PackagePath="/" />
+    <None Include="../../README.md" Pack="true" Visible="false" PackagePath="/" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
